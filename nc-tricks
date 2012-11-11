@@ -1,0 +1,62 @@
+#! /bin/bash
+
+MODE=$1
+PORT=$2
+FILE=$3 
+ADDR=$4
+
+function StartncServer {
+
+nc -l $1
+
+}
+
+function StartncClient {
+
+nc $ADDR $PORT
+
+}
+
+function FileTransferServer {
+
+nc -l $1 > $2
+
+}
+
+function FileTransferClient {
+
+nc $3 $1 < $2
+
+}
+
+if [ $# == 0 ]
+	then
+	echo 'Args needed. Info in /usr/bin/nc-tricks/ and man nc'
+	exit
+fi
+
+if [ $1 == ftclient ]
+	then
+	echo "Transfering file $FILE to $ADDR"
+	FileTransferClient $PORT $FILE $ADDR
+	echo "done!"
+fi
+
+if [ $1 == ftserver ]
+	then
+	echo "Listening on port $PORT. saving file to $FILE"
+	FileTransferServer $PORT $FILE
+	echo "Complete!"
+fi
+
+if [ $1 == server ]
+	then
+	StartncServer $PORT
+fi
+
+if [ $1 == client ]
+	then
+	StartncClient $ADDR $PORT
+fi
+
+
